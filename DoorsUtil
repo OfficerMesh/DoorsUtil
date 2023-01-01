@@ -1,0 +1,85 @@
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SoundService = game:GetService("SoundService")
+local Workspace = game:GetService("Workspace")
+
+local Doors = {}
+
+function Doors:Caption(Text)
+ firesignal(ReplicatedStorage.Bricks.Caption.OnClientEvent, Text)
+end
+
+function Doors:BreakLights()
+    firesignal(ReplicatedStorage.Bricks.UseEventModule.OnClientEvent, "breakLights", Workspace.CurrentRooms[Players.LocalPlayer:GetAttribute("CurrentRoom")], 0.416, 60)	
+end
+
+function Doors:FlickerLights(Seconds)
+    firesignal(ReplicatedStorage.Bricks.UseEventModule.OnClientEvent, "flickerLights", Workspace.CurrentRooms[Players.LocalPlayer:GetAttribute("CurrentRoom")], Seconds)	
+end
+
+
+function Doors:Death()
+    Players.LocalPlayer.Character.Humanoid.Health = 0
+end
+
+function Doors:TakeDamage(Damage)
+    Players.LocalPlayer.Character.Humanoid:TakeDamage(Damage)
+end
+
+function Doors:Jumpscare(Entity)
+    Jumpscare(Entity)
+end
+
+function Doors:Knobs(Knobs)
+    require(game.ReplicatedStorage.ReplicaDataModule).event.Knobs:Fire(tonumber(Knobs))
+end
+
+function Doors:Revives(Revives)
+    require(game.ReplicatedStorage.ReplicaDataModule).event.Revives:Fire(tonumber(Revives))
+end    
+
+function Doors:Boosts(Boosts)
+    require(game.ReplicatedStorage.ReplicaDataModule).event.Boosts:Fire(tonumber(Boosts))
+end
+
+function Doors:Heartbeat()
+    firesignal(game.ReplicatedStorage.Bricks.ClutchHeartbeat.OnClientEvent)
+end    
+
+function Doors:GetAllAchievements()
+    for i,v in pairs(require(game.ReplicatedStorage.Achievements)) do
+spawn(function()
+require(game.Players.LocalPlayer.PlayerGui.MainUI.Initiator.Main_Game.RemoteListener.Modules.AchievementUnlock)(nil, i)
+end)
+end
+end
+
+function Doors:Redroom()
+    firesignal(game.ReplicatedStorage.Bricks.UseEventModule.OnClientEvent, "tryp", workspace.CurrentRooms[game.Players.LocalPlayer:GetAttribute("CurrentRoom")], 9e307)
+end
+
+function Doors:SetDeathHint(Args)
+    debug.setupvalue(getconnections(ReplicatedStorage.Bricks.DeathHint.OnClientEvent)[1].Function, 1, Args)
+end
+
+function Doors:SetDeathReason(Reason)
+     local StatsFolder = ReplicatedStorage.GameStats["Player_" .. Players.LocalPlayer.Name]
+        
+    for _, Data in pairs(StatsFolder:GetChildren()) do
+        Data.DeathCause.Value = Reason
+        Data.DeathReason.Value = Reason
+    end
+end
+
+function Doors:Replicator()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/sponguss/Doors-Entity-Replicator/main/source.lua'))()
+end
+
+function Doors:CustomTool()
+    setclipboard("https://raw.githubusercontent.com/OfficerMesh/ScriptsLibary/main/CreateCustomItems")
+    Doors:Caption("Link to create your own custom tools has been copied to your clipboard.")
+end
+
+function Doors:Print(printreason)
+    print(printreason)
+end    
